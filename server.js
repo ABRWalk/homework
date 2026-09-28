@@ -11,7 +11,24 @@ app.get ('/', (req, res) => {
         <a href="/contact">Контакты</a>
         <a href="/help">Помощь</a>
         <a href="/rooms">Список помещений</a>
+        <a href="/register">Регистрация</a>
         `);
+});
+
+app.get('/register', (req, res) => {
+    res.send(`
+        <form method="POST" action="/register">
+            <input name="login" placeholder="Логин">
+            <input name="password" type="password" placeholder="Пароль">
+            <input name="city" placeholder="Город">
+            <button>Создать пользователя</button>
+            <button type="reset">Очистить форму</button>
+        </form>
+        `);
+});
+
+app.post('/register', (req, res) => {
+    res.send(`Пользователь ${req.body.login} зарегистрирован в городе ${req.body.city}`);
 });
 
 app.get ('/about', (req, res) => {
