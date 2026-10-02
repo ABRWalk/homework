@@ -5,6 +5,9 @@ const PORT = 3000;
 
 app.use (express.urlencoded ({ extended: true }));
 
+app.set('view engine', 'ejs');
+app.set('views', './views');
+
 app.get ('/', (req, res) => {
     res.send(`
         <a href="/about">О портале</a>
@@ -16,23 +19,34 @@ app.get ('/', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-    res.send(`
-        <form method="POST" action="/register">
-            <input name="login" placeholder="Логин">
-            <input name="password" type="password" placeholder="Пароль">
-            <input name="city" placeholder="Город">
-            <button>Создать пользователя</button>
-            <button type="reset">Очистить форму</button>
-        </form>
-        `);
+    res.render('register', {title: 'Регистрация на портале'});
 });
 
+app.get('/login', (req, res) => {
+    res.render('login', {title: "Войдите в аккаунт"});
+});
+
+app.get('/dashboard', (req, res) => {
+    const requests = Request.findByUser(req.session.userId);
+    let html = '<h1>Мои заявки</h1>';
+    requests.forEach (r => {
+        html += `<li>${r.room_name} - ${r.status}</li>`;
+    })
+    html += '</ul>';
+    res.send(html);
+});
+
+// app.get('/dashboard', (req, res) => {
+//     const requests = Request.findByUser{req.session.userId};
+//     res.render('dashboard', ( requests ));
+// });
+
 app.post('/register', (req, res) => {
-    res.send(`Пользователь ${req.body.login} зарегистрирован в городе ${req.body.city}`);
+    res.send(`Пользователь ${req.body.login} зарегистрирован в городе ${req.body.city}, с ФИО ${req.body.fio}, с номером ${req.body.phone}, с почтой ${req.body.email}`);
 });
 
 app.get ('/about', (req, res) => {
-    res.send(`<h1>О портале</h1>`);
+    res.render('about', {title: 'О портале', description: {}});
 });
 
 app.get ('/contact', (req, res) => {
